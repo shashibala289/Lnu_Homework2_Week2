@@ -1,0 +1,237 @@
+---
+output:
+  pdf_document: default
+  word_document: default
+  html_document: default
+---
+```{r}
+#Exercise 2.3. The data set UCBAdmissions is a 3-way table of frequencies classified by Admit, Gender, and Dept.
+#(a)	Find the total number of cases contained in this table.
+library(datasets)
+```
+
+```{r}
+View(UCBAdmissions)
+```
+
+```{r}
+#str function: 0 To see the structure of matrices and its attibutes we use str().
+str(UCBAdmissions)
+```
+
+```{r}
+summary(UCBAdmissions)
+```
+#Summary: - The summary method for tables produces a simple chi-square test of independence of all factors.
+#for example :- Number of factors in UCBAdmissions dataset is 3, chi-square is 2000.3, degree of freedom is 16 and p-value is 0 which indicates a statistically significant difference between groups because p-value (probability) is less than 0.05.
+
+```{r}
+#(b)	For each department, find the total number of applicants.
+margin.table(UCBAdmissions, 3)
+```
+#Ans:- We use margin.table(UCBAdmissions, 3) to sum a table UCBAdmission for the indices in margin (3), that is, over the dimensions not included in margin. 
+```{r}
+#(c)	For each department, find the overall proportion of applicants who were admitted.
+n=24
+Admit <- factor(sample(c("Admitted","Rejected"), n, rep=TRUE))
+mydata = data.frame(Admit)
+mydata
+```
+
+```{r}
+table(mydata$Admit)
+```
+
+```{r}
+mydata1 = UCBAdmissions[,1,] + UCBAdmissions[,2,]
+mydata1
+```
+
+```{r}
+prop.table(mydata1[,1])
+```
+
+```{r}
+prop.table(mydata1[,2])
+```
+
+```{r}
+prop.table(mydata1[,3])
+```
+
+```{r}
+prop.table(mydata1[,4])
+```
+
+```{r}
+prop.table(mydata1[,5])
+```
+
+```{r}
+prop.table(mydata1[,6])
+```
+
+```{r}
+prop.table(ftable(UCBAdmissions, row.vars = "Admit", col.vars = "Dept"))
+```
+#In above result, every row, the proportions sum up to 1. Now you can see that 13 percent of the people showing admitted who were in department A.
+#ftable:-For 3-way and larger tables, the functions ftable()provide a convenient and flexible tabular display.
+#prop.table: -For tables of proportions, use the prop.table()function.
+```{r}
+#(d)	Construct a tabular display of department (rows) and gender (columns), showing the proportion of #applicants in each cell who were admitted relative to the total applicants in that cell.
+UCB <- aperm(UCBAdmissions, c(3,2,1))
+UCB
+```
+#aperm function: - it permutes the dimensions when data are in table form.
+```{r}
+#Exercise 2.5. The data set UKSoccer in vcd gives the distributions of number of goals scored by the 20 teams #in the 1995/96 season of the Premier League of the UK Football Association.
+#(a)	Verify that the total number of games represented in this table is 380.
+library(vcd)
+```
+
+```{r}
+data("UKSoccer")
+```
+
+```{r}
+View(UKSoccer)
+```
+
+```{r}
+summary(UKSoccer)
+```
+#for example :- Number of factors in UKScoccer dataset is 2, chi-square is 18.699, degree of freedom is 16 and p-value is 0.3 which indicates there is not a statistically significant difference between groups because p-value (probability) is more than 0.05.
+
+```{r}
+ftable(UKSoccer)
+```
+
+```{r}
+#(b)	Find the marginal total of the number of goals scored by each of the home and away teams.
+UK <- addmargins(UKSoccer, FUN = sum)
+UK
+```
+#addmargins function: - It is used to show the sum of all the frequency values. addmargins(X, margin, FUN=sum), which extends the dimensions of a table or array with the marginal values calculated by FUN.
+
+```{r}
+#(c)	Express each of the marginal totals as proportions.
+prop.table(UK)
+```
+#prop.table function: - It expresses the table entries as a fraction of a given marginal table.
+
+```{r}
+#(d)Comment on the distribution of the numbers of home-team and away-team goals. Is there any evidence that #home teams score more goals on average?
+library(ggplot2)
+```
+
+```{r}
+library(GGally)
+```
+
+```{r}
+library(rlang)
+```
+
+```{r}
+UK1 <- as.data.frame(UKSoccer)
+class(UK1)
+```
+
+```{r}
+names(UKSoccer)
+```
+
+```{r}
+names(UK1) <- gsub("*Rate", "", names(UK1))
+names(UK1)[1:2] <-  c("Away", "Home")
+GGally::ggpairs(UK1[,c(1:3)], title = "correlation of home team and away team goals", diag = list(continuous = 'density'), axisLabels='none')
+??enexprs
+```
+#Ans:- In above plot, there is an evidence that home teams score more goals on average based on box plots. The median of home games are more than away games.
+
+```{r}
+#Exercise2.7
+#(a)	Try this the long way: convert UCBAdmissions to a data frame (as.data.frame()), manipulate the factors (e.g., interaction()), then convert back to a table (as.data.frame()).
+UCB1 <- as.data.frame(UCBAdmissions)
+head(UCB1)
+```
+
+```{r}
+xtabs(Freq ~ Admit, data = UCB1)
+```
+#xtabs function: - This function allows us to create cross tabulations of data using formula style input. This typically works with case-form or frequency-form data supplied in a data frame or a matrix.
+
+```{r}
+UCB2 <- interaction(UCBAdmissions)
+UCB2
+```
+
+```{r}
+#as.data.frame function converts a data frame to a table.
+UCB3 <- as.data.frame(UCB2)
+UCB3
+```
+
+```{r}
+#(b)	Try this the short way: both ftable() and structable() have as.matrix() methods that convert their result to a matrix.
+ftable(UCBAdmissions)
+```
+
+```{r}
+ftable(Admit + Gender ~ Dept, data=UCBAdmissions)
+```
+#In the above result, the ftable() function is used to print the results more attractively as a 2-way or flat table.
+#from both frequency table, I am trying to show frequency of male/female who are admitted/rejected by departments. Overall in all department male admitted frequency is higher than female except department F. Also, in department F rejections frequency is higher than female.
+
+```{r}
+structable(UCBAdmissions)
+```
+#The structable() function is similar as ftable(), but more general, and uses recursive splits in the vertical or horizontal directions.
+
+```{r}
+#Exercise 2.8. The data set VisualAcuity in vcd gives a 4 × 4 × 2 table as a frequency data frame.
+#(a)	From this, use xtabs() to create two 4 × 4 frequency tables, one for each gender.
+library(vcd)
+```
+#install.packages("vcd")
+#installed above package because VisualAcuity dataset is in "vcd" package.
+
+```{r}
+View(VisualAcuity)
+```
+
+```{r}
+summary(VisualAcuity)
+```
+#In VisualAcuity dataset, frequency ranges from 27 to 1772. Median is lower than mean and 3rd quartile is just above mean. The IQR is 298.5. 
+
+```{r}
+str(VisualAcuity)
+```
+#The visualAcuity dataset having 32 observations and 4 attributes/columns. 
+
+```{r}
+A.tab <- xtabs(Freq~right+left+gender,data=VisualAcuity)
+print(A.tab)
+```
+#I converted the VisualAcuity to a 3-way table using xtabs(), giving output as variable A.tab.
+
+```{r}
+#(b)	Use structable() to create a nicely organized tabular display.
+structable(gender ~ right+left, data=VisualAcuity)
+```
+#
+```{r}
+#(c)	Use xtable() to create a LATEX or HTML table.
+library(xtable)
+data("VisualAcuity")
+```
+#By default, xtable() formats VisualAcuity in LATEXas a vertical table, and prints the LATEX markup shown below.
+
+```{r}
+xtable(VisualAcuity[1:24, ])
+```
+
+
+
+
