@@ -12,6 +12,8 @@ library(datasets)
 
 ```{r}
 View(UCBAdmissions)
+# This comment is a sample
+summary(UCBAdmissions)
 ```
 
 ```{r}
@@ -189,8 +191,8 @@ structable(UCBAdmissions)
 #The structable() function is similar as ftable(), but more general, and uses recursive splits in the vertical or horizontal directions.
 
 ```{r}
-#Exercise 2.8. The data set VisualAcuity in vcd gives a 4 × 4 × 2 table as a frequency data frame.
-#(a)	From this, use xtabs() to create two 4 × 4 frequency tables, one for each gender.
+#Exercise 2.8. The data set VisualAcuity in vcd gives a 4 ? 4 ? 2 table as a frequency data frame.
+#(a)	From this, use xtabs() to create two 4 ? 4 frequency tables, one for each gender.
 library(vcd)
 ```
 #install.packages("vcd")
